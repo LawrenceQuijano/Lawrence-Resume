@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lawrence Quijano — Full Stack Developer & IT Support</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            pastel: {
+              lavender: '#ddd6fe',
+              lavenderDark: '#c4b5fd',
+              mint: '#a7f3d0',
+              mintDark: '#6ee7b7',
+              sky: '#bae6fd',
+              skyDark: '#7dd3fc',
+              peach: '#fecdd3',
+              peachDark: '#fda4af',
+              slateBg: '#090d16',
+              cardDark: '#111827',
+              borderDark: '#1f2937',
+              cardLight: '#ffffff',
+              borderLight: '#f1f5f9'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Clean Soft Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 9999px; }
+    html:not(.dark) ::-webkit-scrollbar-thumb { background: #cbd5e1; }
+
+    /* Soft Pastel Glows & Minimal Cards */
+    .glass-minimal {
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .reveal-on-scroll {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+
+    .reveal-on-scroll.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .skill-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+    .skill-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .tag-pill {
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .tag-pill:hover {
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+
+<body class="bg-slate-50 dark:bg-pastel-slateBg text-slate-800 dark:text-slate-200 font-sans antialiased transition-colors duration-300 min-h-screen relative overflow-x-hidden">
+
+  <!-- Floating Toast Notification -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-3 bg-slate-900 dark:bg-slate-100 text-slate-100 dark:text-slate-900 px-4 py-3 rounded-xl shadow-lg border border-slate-700/50 dark:border-slate-300 text-xs font-mono">
+    <i class="fa-solid fa-check text-emerald-400 dark:text-emerald-600"></i>
+    <span id="toastMsg">Copied to clipboard!</span>
+  </div>
+
+  <!-- Top Status Banner -->
+  <div class="border-b border-slate-200 dark:border-slate-800/80 bg-white/50 dark:bg-slate-900/40 backdrop-blur-sm py-2 px-4 text-xs font-mono text-slate-500 dark:text-slate-400">
+    <div class="max-w-4xl mx-auto w-full flex flex-wrap justify-between items-center gap-2">
+      <span class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+        <span>STATUS: <span class="text-emerald-600 dark:text-emerald-400 font-medium">PRODUCTION READY // v2.4.0</span></span>
+      </span>
+      <div class="flex items-center gap-4 text-[11px] opacity-80">
+        <span><i class="fa-solid fa-location-dot me-1 text-indigo-400"></i> General Trias, Cavite, PH</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-4xl mx-auto px-4 py-8 sm:py-12">
+
+    <!-- Header Section -->
+    <header class="bg-white dark:bg-pastel-cardDark border border-slate-200/80 dark:border-pastel-borderDark rounded-2xl p-6 sm:p-8 mb-8 shadow-sm transition-all duration-300">
+      
+      <!-- Top Badges & Theme Switcher -->
+      <div class="flex justify-between items-center mb-6 flex-wrap gap-3">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-indigo-200 dark:border-indigo-900/50 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 text-xs font-mono">
+          <i class="fa-solid fa-code text-indigo-400"></i> Fullstack Developer & IT Support Specialist
+        </div>
+        
+        <div class="flex items-center gap-2">
+          <button id="resetFilterBtn" onclick="resetAllFilters()" class="hidden text-xs font-mono text-rose-500 hover:text-rose-600 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/40 px-3 py-1.5 rounded-xl transition-all items-center gap-1.5">
+            <i class="fa-solid fa-xmark"></i> Clear Filter
+          </button>
+
+          <button id="themeToggle" onclick="toggleTheme()" aria-label="Toggle Theme" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
+            <i id="themeIcon" class="fa-solid fa-moon"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+        <div class="space-y-3">
+          <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+            LAWRENCE QUIJANO
+          </h1>
+          
+          <p class="text-xs sm:text-sm font-mono font-medium tracking-wide text-slate-600 dark:text-slate-400 flex flex-wrap gap-x-2 gap-y-1">
+            <span class="text-indigo-600 dark:text-indigo-300">FULLSTACK DEVELOPER</span>
+            <span class="text-slate-300 dark:text-slate-700">|</span>
+            <span class="text-sky-600 dark:text-sky-300">SOFTWARE DEVELOPER</span>
+            <span class="text-slate-300 dark:text-slate-700">|</span>
+            <span class="text-emerald-600 dark:text-emerald-300">IT SUPPORT SPECIALIST</span>
+          </p>
+          
+          <div class="flex flex-wrap gap-2 text-xs font-mono text-slate-600 dark:text-slate-400 pt-2">
+            <button onclick="copyToClipboard('09387176887', 'Phone copied!')" class="flex items-center gap-2 hover:text-indigo-600 dark:hover:text-indigo-300 transition-colors bg-slate-100 dark:bg-slate-800/50 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800">
+              <i class="fa-solid fa-phone text-indigo-400"></i>
+              <span>09387176887</span>
+            </button>
+            <button onclick="copyToClipboard('Lawrencequijano222@gmail.com', 'Email copied!')" class="flex items-center gap-2 hover:text-indigo-600 dark:hover:text-indigo-300 transition-colors bg-slate-100 dark:bg-slate-800/50 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800">
+              <i class="fa-solid fa-envelope text-sky-400"></i>
+              <span>Lawrencequijano222@gmail.com</span>
+            </button>
+            <span class="flex items-center gap-2 bg-slate-100 dark:bg-slate-800/50 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800">
+              <i class="fa-solid fa-location-dot text-rose-400"></i>General Trias, Cavite
+            </span>
+          </div>
+        </div>
+
+        <!-- Action Links -->
+        <div class="flex flex-wrap sm:flex-col gap-2.5 w-full sm:w-auto pt-2 sm:pt-0">
+          <a href="https://behance.net/gallery/216948485/Lawrence-Quijano-2026-Portfolio" target="_blank" class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-xs transition-all shadow-sm">
+            <i class="fa-brands fa-behance"></i>
+            <span>Behance</span>
+            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+          </a>
+          <a href="mailto:Lawrencequijano222@gmail.com" class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 font-medium text-xs hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+            <i class="fa-regular fa-paper-plane text-emerald-500"></i>
+            <span>Hire Lawrence</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Navigation & Search Toolbar -->
+    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8 sticky top-4 z-30 p-1.5 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 glass-minimal shadow-sm">
+      
+      <!-- Interactive Navigation Tabs -->
+      <div class="flex bg-slate-100 dark:bg-slate-950 p-1 rounded-xl border border-slate-200 dark:border-slate-800/80 w-full sm:w-auto">
+        <button onclick="filterTab('all')" id="tab-all" class="tab-btn px-4 py-1.5 rounded-lg text-xs font-mono font-medium transition-all text-indigo-600 dark:text-indigo-300 bg-white dark:bg-slate-900 shadow-sm">
+          All
+        </button>
+        <button onclick="filterTab('experience')" id="tab-experience" class="tab-btn px-4 py-1.5 rounded-lg text-xs font-mono font-medium transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+          Experience
+        </button>
+        <button onclick="filterTab('skills')" id="tab-skills" class="tab-btn px-4 py-1.5 rounded-lg text-xs font-mono font-medium transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+          Tech Stack
+        </button>
+        <button onclick="filterTab('education')" id="tab-education" class="tab-btn px-4 py-1.5 rounded-lg text-xs font-mono font-medium transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+          Education
+        </button>
+      </div>
+
+      <!-- Real-Time Search Bar -->
+      <div class="relative w-full sm:w-64">
+        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+        <input type="text" id="searchInput" onkeyup="liveSearch()" placeholder="Search skills, tech..." class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl pl-8 pr-8 py-1.5 text-xs font-mono text-slate-900 dark:text-slate-100 focus:outline-none focus:border-indigo-500 transition-all">
+        <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Active Tag Search Notice -->
+    <div id="activeFilterNotice" class="hidden mb-6 p-3 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900/40 flex items-center justify-between text-xs font-mono text-indigo-700 dark:text-indigo-300">
+      <span class="flex items-center gap-2">
+        <i class="fa-solid fa-filter"></i>
+        <span>Filtered by tag: <strong id="activeTagName" class="underline"></strong></span>
+      </span>
+      <button onclick="resetAllFilters()" class="hover:underline font-bold text-rose-500">Reset</button>
+    </div>
+
+    <!-- Executive Summary Section -->
+    <section class="tab-content section-all reveal-on-scroll bg-white dark:bg-pastel-cardDark border border-slate-200/80 dark:border-pastel-borderDark rounded-2xl p-6 sm:p-8 mb-8 shadow-sm">
+      <div class="flex items-center gap-2 mb-3 text-xs font-mono text-slate-400 uppercase tracking-wider">
+        <i class="fa-solid fa-user-gear text-indigo-400"></i> Executive Summary
+      </div>
+      <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
+        Versatile Full Stack Web Developer, CMS Specialist, and IT Support Specialist with extensive experience in custom WordPress theme/plugin architecture, full-stack software engineering, DevOps deployment pipelines, and digital content operations. Proven track record in migrating complex web domains, configuring SEO analytics, managing EDM email marketing campaigns, and leveraging AI productivity tools like Claude to accelerate development workflows. Adept at maintaining server infrastructure, optimizing databases across MySQL and PostgreSQL, and delivering end-to-end technical support to ensure system uptime and operational efficiency.
+      </p>
+    </section>
+
+    <!-- Technical Skills Directory (Pastel Styling & Animated Load on Scroll) -->
+    <section class="tab-content section-all section-skills reveal-on-scroll bg-white dark:bg-pastel-cardDark border border-slate-200/80 dark:border-pastel-borderDark rounded-2xl p-6 sm:p-8 mb-8 shadow-sm">
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-2 text-xs font-mono text-slate-400 uppercase tracking-wider">
+          <i class="fa-solid fa-layer-group text-sky-400"></i> Tech Stack & Core Competencies
+        </div>
+        <span class="text-[11px] font-mono text-slate-400 hidden sm:inline"><i class="fa-solid fa-mouse-pointer me-1 text-slate-400"></i> Click tags to filter</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        
+        <!-- Category 1: Core & Frameworks -->
+        <div class="skill-card p-5 rounded-xl border border-indigo-100 dark:border-slate-800 bg-indigo-50/30 dark:bg-slate-900/40">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-xs font-mono text-indigo-700 dark:text-indigo-300 font-semibold flex items-center gap-1.5">
+              <i class="fa-solid fa-code text-indigo-400"></i> // CORE & FRAMEWORKS
+            </span>
+            <span class="text-xs font-mono font-semibold text-indigo-600 dark:text-indigo-300 progress-counter" data-target="95">0%</span>
+          </div>
+          <!-- Progress Bar (Starts at 0%, fills on scroll) -->
+          <div class="w-full bg-slate-200/70 dark:bg-slate-800 h-2 rounded-full mb-4 overflow-hidden">
+            <div class="progress-fill bg-indigo-400 dark:bg-indigo-400 h-full rounded-full w-0 transition-all duration-1000 ease-out" data-width="95%"></div>
+          </div>
+          <div class="flex flex-wrap gap-1.5">
+            <span onclick="filterBySkill('JavaScript')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-indigo-100/70 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40">JavaScript (ES6+)</span>
+            <span onclick="filterBySkill('PHP')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-indigo-100/70 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40">PHP</span>
+            <span onclick="filterBySkill('C++')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-indigo-100/70 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40">C++</span>
+            <span onclick="filterBySkill('Java')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-indigo-100/70 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40">Java</span>
+            <span onclick="filterBySkill('VB.NET')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-indigo-100/70 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40">VB.NET</span>
+            <span onclick="filterBySkill('HTML5')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-indigo-100/70 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40">HTML5</span>
+            <span onclick="filterBySkill('CSS3')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-indigo-100/70 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40">CSS3</span>
+            <span onclick="filterBySkill('Python')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-indigo-100/70 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40">Python</span>
+            <span onclick="filterBySkill('React')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-indigo-100/70 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40">React.js</span>
+            <span onclick="filterBySkill('React Native')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-indigo-100/70 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40">React Native</span>
+            <span onclick="filterBySkill('Node.js')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-indigo-100/70 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40">Node.js</span>
+            <span onclick="filterBySkill('Express')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-indigo-100/70 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40">Express.js</span>
+            <span onclick="filterBySkill('Laravel')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-indigo-100/70 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40">Laravel</span>
+            <span onclick="filterBySkill('API')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-indigo-100/70 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40">RESTful APIs</span>
+          </div>
+        </div>
+
+        <!-- Category 2: CMS & Marketing Tech -->
+        <div class="skill-card p-5 rounded-xl border border-sky-100 dark:border-slate-800 bg-sky-50/30 dark:bg-slate-900/40">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-xs font-mono text-sky-700 dark:text-sky-300 font-semibold flex items-center gap-1.5">
+              <i class="fa-brands fa-wordpress text-sky-400"></i> // CMS & MARKETING TECH
+            </span>
+            <span class="text-xs font-mono font-semibold text-sky-600 dark:text-sky-300 progress-counter" data-target="98">0%</span>
+          </div>
+          <div class="w-full bg-slate-200/70 dark:bg-slate-800 h-2 rounded-full mb-4 overflow-hidden">
+            <div class="progress-fill bg-sky-400 dark:bg-sky-400 h-full rounded-full w-0 transition-all duration-1000 ease-out" data-width="98%"></div>
+          </div>
+          <div class="flex flex-wrap gap-1.5">
+            <span onclick="filterBySkill('WordPress')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-sky-100/70 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-sky-900/40">WordPress Themes</span>
+            <span onclick="filterBySkill('Custom Themes')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-sky-100/70 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-sky-900/40">Plugins</span>
+            <span onclick="filterBySkill('WooCommerce')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-sky-100/70 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-sky-900/40">WooCommerce</span>
+            <span onclick="filterBySkill('EDM')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-sky-100/70 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-sky-900/40">EDM Campaigns</span>
+            <span onclick="filterBySkill('Mailchimp')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-sky-100/70 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-sky-900/40">Mailchimp / SendGrid</span>
+            <span onclick="filterBySkill('SEO')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-sky-100/70 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-sky-900/40">Technical SEO</span>
+            <span onclick="filterBySkill('GA4')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-sky-100/70 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-sky-900/40">GA4 Analytics</span>
+            <span onclick="filterBySkill('Search Console')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-sky-100/70 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-sky-900/40">Google Search Console</span>
+          </div>
+        </div>
+
+        <!-- Category 3: DevOps & Server Admin -->
+        <div class="skill-card p-5 rounded-xl border border-emerald-100 dark:border-slate-800 bg-emerald-50/30 dark:bg-slate-900/40">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-xs font-mono text-emerald-700 dark:text-emerald-300 font-semibold flex items-center gap-1.5">
+              <i class="fa-solid fa-server text-emerald-400"></i> // DEVOPS & SERVER ADMIN
+            </span>
+            <span class="text-xs font-mono font-semibold text-emerald-600 dark:text-emerald-300 progress-counter" data-target="90">0%</span>
+          </div>
+          <div class="w-full bg-slate-200/70 dark:bg-slate-800 h-2 rounded-full mb-4 overflow-hidden">
+            <div class="progress-fill bg-emerald-400 dark:bg-emerald-400 h-full rounded-full w-0 transition-all duration-1000 ease-out" data-width="90%"></div>
+          </div>
+          <div class="flex flex-wrap gap-1.5">
+            <span onclick="filterBySkill('CI/CD')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-emerald-100/70 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900/40">CI/CD Pipelines</span>
+            <span onclick="filterBySkill('Git')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-emerald-100/70 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900/40">Git & GitHub</span>
+            <span onclick="filterBySkill('Linux')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-emerald-100/70 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900/40">Linux CLI (Bash)</span>
+            <span onclick="filterBySkill('cPanel')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-emerald-100/70 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900/40">cPanel / WHM</span>
+            <span onclick="filterBySkill('DNS')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-emerald-100/70 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900/40">DNS Management</span>
+            <span onclick="filterBySkill('Domain')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-emerald-100/70 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900/40">Domain Migrations</span>
+            <span onclick="filterBySkill('SSL')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-emerald-100/70 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900/40">SSL Setup</span>
+          </div>
+        </div>
+
+        <!-- Category 4: Databases & IT Systems -->
+        <div class="skill-card p-5 rounded-xl border border-rose-100 dark:border-slate-800 bg-rose-50/30 dark:bg-slate-900/40">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-xs font-mono text-rose-700 dark:text-rose-300 font-semibold flex items-center gap-1.5">
+              <i class="fa-solid fa-database text-rose-400"></i> // DATABASES & IT SYSTEMS
+            </span>
+            <span class="text-xs font-mono font-semibold text-rose-600 dark:text-rose-300 progress-counter" data-target="92">0%</span>
+          </div>
+          <div class="w-full bg-slate-200/70 dark:bg-slate-800 h-2 rounded-full mb-4 overflow-hidden">
+            <div class="progress-fill bg-rose-400 dark:bg-rose-400 h-full rounded-full w-0 transition-all duration-1000 ease-out" data-width="92%"></div>
+          </div>
+          <div class="flex flex-wrap gap-1.5">
+            <span onclick="filterBySkill('PostgreSQL')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-rose-100/70 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-900/40">PostgreSQL</span>
+            <span onclick="filterBySkill('MySQL')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-rose-100/70 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-900/40">MySQL</span>
+            <span onclick="filterBySkill('SQL Server')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-rose-100/70 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-900/40">SQL Server</span>
+            <span onclick="filterBySkill('Normalization')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-rose-100/70 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-900/40">Database Normalization</span>
+            <span onclick="filterBySkill('Hardware')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-rose-100/70 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-900/40">Hardware Diagnostics</span>
+            <span onclick="filterBySkill('Network')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-rose-100/70 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-900/40">Network Troubleshooting</span>
+            <span onclick="filterBySkill('CCTV')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-rose-100/70 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-900/40">CCTV Systems</span>
+            <span onclick="filterBySkill('Claude')" class="tag-pill text-[11px] font-mono px-2.5 py-1 rounded-md bg-rose-100/70 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-900/40">AI Productivity Tools</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Professional Experience Timeline (Pixel-Aligned Layout) -->
+    <section class="tab-content section-all section-experience reveal-on-scroll bg-white dark:bg-pastel-cardDark border border-slate-200/80 dark:border-pastel-borderDark rounded-2xl p-6 sm:p-8 mb-8 shadow-sm">
+      <div class="flex items-center gap-2 mb-8 text-xs font-mono text-slate-400 uppercase tracking-wider">
+        <i class="fa-solid fa-briefcase text-indigo-400"></i> Professional Timeline
+      </div>
+
+      <div class="relative border-l-2 border-slate-200 dark:border-slate-800 ml-3 sm:ml-4 pl-6 sm:pl-8 space-y-8">
+        
+<!-- Job 1 -->
+        <div class="job-card relative group transition-all duration-300">
+          <div class="absolute -left-[31px] sm:-left-[39px] top-1.5 w-3.5 h-3.5 rounded-full bg-indigo-400 border-4 border-white dark:border-slate-900 shadow-sm"></div>
+          
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 mb-1.5">
+            <h3 class="font-bold text-slate-900 dark:text-white text-base leading-snug">
+              Full Stack Web Developer / SEO & Content Manager
+            </h3>
+            <span class="text-xs font-mono text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-900/40 px-2.5 py-1 rounded-md w-max shrink-0">
+              Aug 2025 – Oct 2026
+            </span>
+          </div>
+          <p class="text-xs font-mono font-medium text-slate-500 dark:text-slate-400 mb-4">Matt's Education</p>
+          <ul class="text-xs text-slate-600 dark:text-slate-300 space-y-3 leading-relaxed">
+            <li class="flex items-start gap-2">
+              <span class="text-indigo-400 select-none font-bold mt-0.5">•</span>
+              <span>Engineered custom Student Management System featuring automated Gmail triggers and EDM email blast campaigns to streamline onboarding workflows.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-indigo-400 select-none font-bold mt-0.5">•</span>
+              <span>Orchestrated full-scale website modernization, end-to-end digital asset migrations from local development to live servers, and hosting server management.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-indigo-400 select-none font-bold mt-0.5">•</span>
+              <span>Managed daily website operations, content publishing pipelines, and blog post management to ensure high engagement and fresh digital content.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-indigo-400 select-none font-bold mt-0.5">•</span>
+              <span>Implemented robust website security configurations, firewall rules, and proactive vulnerability patching to safeguard web infrastructure.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-indigo-400 select-none font-bold mt-0.5">•</span>
+              <span>Configured web performance analytics using Google Search Console and GA4, conducting continuous SEO audits to drive organic visibility.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-indigo-400 select-none font-bold mt-0.5">•</span>
+              <span>Troubleshot complex web issues, resolving frontend/backend bugs, database bottlenecks, and broken workflows with minimal downtime.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-indigo-400 select-none font-bold mt-0.5">•</span>
+              <span>Delivered comprehensive IT support, managing hostings, domain DNS records, and user technical concerns to ensure total operational uptime.</span>
+            </li>
+          </ul>
+        </div>
+<!-- Job 2 -->
+        <div class="job-card relative group transition-all duration-300">
+          <div class="absolute -left-[31px] sm:-left-[39px] top-1.5 w-3.5 h-3.5 rounded-full bg-sky-400 border-4 border-white dark:border-slate-900 shadow-sm"></div>
+          
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 mb-1.5">
+            <h3 class="font-bold text-slate-900 dark:text-white text-base leading-snug">
+              Full Stack Web Developer / Tech Support Lead
+            </h3>
+            <span class="text-xs font-mono text-sky-700 dark:text-sky-300 bg-sky-50 dark:bg-sky-950/60 border border-sky-200 dark:border-sky-900/40 px-2.5 py-1 rounded-md w-max shrink-0">
+              Dec 2025 – Apr 2026
+            </span>
+          </div>
+          <p class="text-xs font-mono font-medium text-slate-500 dark:text-slate-400 mb-4">Park Academy</p>
+          <ul class="text-xs text-slate-600 dark:text-slate-300 space-y-3 leading-relaxed">
+            <li class="flex items-start gap-2">
+              <span class="text-sky-400 select-none font-bold mt-0.5">•</span>
+              <span>Architected, designed, and launched 3 live websites from scratch, serving as Lead Developer across high-traffic educational domains.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-sky-400 select-none font-bold mt-0.5">•</span>
+              <span>Orchestrated seamless full-stack production deployments and site rollouts with zero downtime.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-sky-400 select-none font-bold mt-0.5">•</span>
+              <span>Managed and maintained ongoing website operations, content updates, and remote technical support for all web portals.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-sky-400 select-none font-bold mt-0.5">•</span>
+              <span>Administered cloud hosting environments, server resources, and DNS domain configurations to guarantee optimal performance and uptime.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-sky-400 select-none font-bold mt-0.5">•</span>
+              <span>Implemented robust website security protocols, routine health checks, SSL management, and proactive vulnerability patching.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-sky-400 select-none font-bold mt-0.5">•</span>
+              <span>Architected and executed comprehensive technical SEO strategies, drastically improving domain authority and organic visibility.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-sky-400 select-none font-bold mt-0.5">•</span>
+              <span>Integrated RESTful API services and streamlined backend query handling to optimize overall user throughput and system speed.</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Job 3 -->
+        <div class="job-card relative group transition-all duration-300">
+          <div class="absolute -left-[31px] sm:-left-[39px] top-1.5 w-3.5 h-3.5 rounded-full bg-emerald-400 border-4 border-white dark:border-slate-900 shadow-sm"></div>
+          
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 mb-1.5">
+            <h3 class="font-bold text-slate-900 dark:text-white text-base leading-snug">
+              DevOps Engineer 2
+            </h3>
+            <span class="text-xs font-mono text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-900/40 px-2.5 py-1 rounded-md w-max shrink-0">
+              July 2025 – Sept 2025
+            </span>
+          </div>
+          <p class="text-xs font-mono font-medium text-slate-500 dark:text-slate-400 mb-4">Integr8 Software Solutions, Inc.</p>
+          <ul class="text-xs text-slate-600 dark:text-slate-300 space-y-3 leading-relaxed">
+            <li class="flex items-start gap-2">
+              <span class="text-emerald-400 select-none font-bold mt-0.5">•</span>
+              <span>Managed E2E system quality assurance, continuous integration (CI/CD), and automated build testing for stable production deployments.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-emerald-400 select-none font-bold mt-0.5">•</span>
+              <span>Translated client business requirements into technical specifications, managing version control via Git workflows.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-emerald-400 select-none font-bold mt-0.5">•</span>
+              <span>Delivered Tier-2 technical support, resolving server configuration tickets and tuning system performance based on active feedback.</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Job 4 -->
+        <div class="job-card relative group transition-all duration-300">
+          <div class="absolute -left-[31px] sm:-left-[39px] top-1.5 w-3.5 h-3.5 rounded-full bg-rose-400 border-4 border-white dark:border-slate-900 shadow-sm"></div>
+          
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 mb-1.5">
+            <h3 class="font-bold text-slate-900 dark:text-white text-base leading-snug">
+              Software Developer Engineer 1 & 2
+            </h3>
+            <span class="text-xs font-mono text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-900/40 px-2.5 py-1 rounded-md w-max shrink-0">
+              Nov 2023 – July 2025
+            </span>
+          </div>
+          <p class="text-xs font-mono font-medium text-slate-500 dark:text-slate-400 mb-4">Integr8 Software Solutions, Inc.</p>
+          <ul class="text-xs text-slate-600 dark:text-slate-300 space-y-3 leading-relaxed">
+            <li class="flex items-start gap-2">
+              <span class="text-rose-400 select-none font-bold mt-0.5">•</span>
+              <span>Engineered an automated copy-paste Excel uploader that streamlined data ingestion, significantly reducing manual data entry errors and accelerating user efficiency.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-rose-400 select-none font-bold mt-0.5">•</span>
+              <span>Designed and implemented a Form Signatory Maintenance module to dynamically bind signatories to Crystal Reports during preview and printing workflows.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-rose-400 select-none font-bold mt-0.5">•</span>
+              <span>Developed a CAS Footer Maintenance system to manage dynamic footer content for CAS reports, ensuring consistent brand compliance and layout standardization.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-rose-400 select-none font-bold mt-0.5">•</span>
+              <span>Built a Custom Header Reports Maker, empowering users to generate and manage dynamic report headers seamlessly integrated into preview templates.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-rose-400 select-none font-bold mt-0.5">•</span>
+              <span>Developed a trial-based ERP system featuring automated subscription logic and dynamic access restriction upon trial expiration for live testing.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-rose-400 select-none font-bold mt-0.5">•</span>
+              <span>Engineered a prototype Hotel Management System complete with a responsive front-end user interface and core booking logic for stakeholder demonstrations.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-rose-400 select-none font-bold mt-0.5">•</span>
+              <span>Designed and built responsive WordPress websites and mobile/web mock-ups (including Keto Diet planning and Pranic Healing) with integrated blogging features.</span>
+            </li>
+          </ul>
+        </div>
+        
+		
+		<!-- Job 5 -->
+        <div class="job-card relative group transition-all duration-300">
+          <div class="absolute -left-[31px] sm:-left-[39px] top-1.5 w-3.5 h-3.5 rounded-full bg-amber-400 border-4 border-white dark:border-slate-900 shadow-sm"></div>
+          
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 mb-1.5">
+            <h3 class="font-bold text-slate-900 dark:text-white text-base leading-snug">
+              IT Support Technician (Intern)
+            </h3>
+            <span class="text-xs font-mono text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-900/40 px-2.5 py-1 rounded-md w-max shrink-0">
+              Mar 2023 – Jul 2023
+            </span>
+          </div>
+          <p class="text-xs font-mono font-medium text-slate-500 dark:text-slate-400 mb-4">Reliance Producers Cooperative</p>
+          <ul class="text-xs text-slate-600 dark:text-slate-300 space-y-3 leading-relaxed">
+            <li class="flex items-start gap-2">
+              <span class="text-amber-400 select-none font-bold mt-0.5">•</span>
+              <span>Diagnosed and resolved complex hardware, software, and local network issues to minimize system downtime and maintain operational efficiency.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-amber-400 select-none font-bold mt-0.5">•</span>
+              <span>Installed, configured, and maintained premises security and CCTV surveillance camera networks to ensure secure premises and reliable monitoring.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-amber-400 select-none font-bold mt-0.5">•</span>
+              <span>Utilized advanced MS Office applications for accurate data entry, structured record-keeping, and efficient information management.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-amber-400 select-none font-bold mt-0.5">•</span>
+              <span>Oversaw software application rollouts and delivered direct technical support, user training, and ongoing troubleshooting.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-amber-400 select-none font-bold mt-0.5">•</span>
+              <span>Created visual assets, layouts, and digital designs using industry-standard tools to support branding and marketing initiatives.</span>
+            </li>
+          </ul>
+        </div>
+		
+  
+
+      </div>
+    </section>
+
+    <!-- Education Section -->
+    <section class="tab-content section-all section-education reveal-on-scroll bg-white dark:bg-pastel-cardDark border border-slate-200/80 dark:border-pastel-borderDark rounded-2xl p-6 sm:p-8 mb-12 shadow-sm">
+      <div class="flex items-center gap-2 mb-6 text-xs font-mono text-slate-400 uppercase tracking-wider">
+        <i class="fa-solid fa-graduation-cap text-indigo-400"></i> Academic Background & Certifications
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="p-5 rounded-xl border border-indigo-100 dark:border-slate-800 bg-indigo-50/20 dark:bg-slate-900/30">
+          <h4 class="font-bold text-slate-900 dark:text-white text-sm">Bachelor of Science in Information Technology</h4>
+          <p class="text-xs text-slate-500 dark:text-slate-400 font-mono mt-1">Cavite State University – Indang Main Campus</p>
+          <p class="text-xs text-indigo-600 dark:text-indigo-300 mt-2 font-medium">Scholarship Recipient</p>
+          <span class="inline-block mt-3 text-[10px] font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2.5 py-1 rounded-md">
+            Batch 2019 – 2023
+          </span>
+        </div>
+
+        <div class="p-5 rounded-xl border border-emerald-100 dark:border-slate-800 bg-emerald-50/20 dark:bg-slate-900/30">
+          <h4 class="font-bold text-slate-900 dark:text-white text-sm">Seminar & Workshop Certifications</h4>
+          <p class="text-xs text-slate-500 dark:text-slate-400 font-mono mt-1">UPSKILL I.T. Workshop Series</p>
+          <p class="text-xs text-emerald-600 dark:text-emerald-300 mt-2 font-medium">Ethical Hacking & Systems Security Management</p>
+          <span class="inline-block mt-3 text-[10px] font-mono bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900/40 px-2.5 py-1 rounded-md font-medium">
+            Security | Systems
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-center text-xs text-slate-400 dark:text-slate-500 font-mono py-6 border-t border-slate-200 dark:border-slate-800">
+      <p>© 2026 Lawrence Quijano.Portfolio.</p>
+    </footer>
+
+  </div>
+
+  <!-- JavaScript Interaction Logic -->
+  <script>
+    // 1. Light / Dark Theme Switching
+    function toggleTheme() {
+      const htmlEl = document.documentElement;
+      const themeIcon = document.getElementById('themeIcon');
+      
+      if (htmlEl.classList.contains('dark')) {
+        htmlEl.classList.remove('dark');
+        themeIcon.className = 'fa-solid fa-sun text-amber-500';
+        localStorage.setItem('theme', 'light');
+      } else {
+        htmlEl.classList.add('dark');
+        themeIcon.className = 'fa-solid fa-moon';
+        localStorage.setItem('theme', 'dark');
+      }
+    }
+
+    if (localStorage.getItem('theme') === 'light') {
+      document.documentElement.classList.remove('dark');
+      document.getElementById('themeIcon').className = 'fa-solid fa-sun text-amber-500';
+    }
+
+    // 2. Tab Navigation Category Filtering
+    function filterTab(category) {
+      const tabs = document.querySelectorAll('.tab-btn');
+      tabs.forEach(t => {
+        t.className = 'tab-btn px-4 py-1.5 rounded-lg text-xs font-mono font-medium transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white';
+      });
+
+      const activeBtn = document.getElementById('tab-' + category);
+      if (activeBtn) {
+        activeBtn.className = 'tab-btn px-4 py-1.5 rounded-lg text-xs font-mono font-medium transition-all text-indigo-600 dark:text-indigo-300 bg-white dark:bg-slate-900 shadow-sm';
+      }
+
+      const contents = document.querySelectorAll('.tab-content');
+      contents.forEach(c => c.style.display = 'none');
+
+      if (category === 'all') {
+        document.querySelectorAll('.section-all').forEach(s => s.style.display = 'block');
+      } else {
+        document.querySelectorAll('.section-' + category).forEach(s => s.style.display = 'block');
+      }
+
+      // Re-initialize progress loaders for newly visible sections
+      observeProgressBars();
+    }
+
+    // 3. Live Search & Pill Filter
+    function liveSearch() {
+      const input = document.getElementById('searchInput').value.toLowerCase().trim();
+      const clearBtn = document.getElementById('clearSearchBtn');
+      const cards = document.querySelectorAll('.skill-card, .job-card');
+
+      if (input.length > 0) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+
+      cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        if (text.includes(input)) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    function clearSearch() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('clearSearchBtn').classList.add('hidden');
+      liveSearch();
+    }
+
+    function filterBySkill(skillKeyword) {
+      filterTab('all');
+      const searchInput = document.getElementById('searchInput');
+      searchInput.value = skillKeyword;
+      liveSearch();
+
+      const notice = document.getElementById('activeFilterNotice');
+      const activeTagName = document.getElementById('activeTagName');
+      const resetBtn = document.getElementById('resetFilterBtn');
+
+      notice.classList.remove('hidden');
+      resetBtn.classList.remove('hidden');
+      resetBtn.classList.add('flex');
+      activeTagName.textContent = skillKeyword;
+    }
+
+    function resetAllFilters() {
+      clearSearch();
+      document.getElementById('activeFilterNotice').classList.add('hidden');
+      const resetBtn = document.getElementById('resetFilterBtn');
+      resetBtn.classList.add('hidden');
+      resetBtn.classList.remove('flex');
+    }
+
+    // 4. Clipboard Toast Copy
+    function copyToClipboard(text, message) {
+      const el = document.createElement('textarea');
+      el.value = text;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+
+      showToast(message);
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMsg');
+      toastMsg.textContent = message;
+
+      toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+      }, 2500);
+    }
+
+    // 5. Scroll-Triggered Skill Bar Load & Percentage Count-Up Animation
+    function observeProgressBars() {
+      const skillCards = document.querySelectorAll('.skill-card');
+      
+      const skillObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const card = entry.target;
+            const fill = card.querySelector('.progress-fill');
+            const counter = card.querySelector('.progress-counter');
+            
+            if (fill && !fill.classList.contains('animated')) {
+              fill.classList.add('animated');
+              const targetWidth = fill.getAttribute('data-width');
+              fill.style.width = targetWidth;
+
+              if (counter) {
+                const targetVal = parseInt(counter.getAttribute('data-target'), 10);
+                let currentVal = 0;
+                const duration = 1000;
+                const steps = 30;
+                const increment = targetVal / steps;
+                const stepTime = duration / steps;
+
+                const timer = setInterval(() => {
+                  currentVal += increment;
+                  if (currentVal >= targetVal) {
+                    counter.textContent = targetVal + '%';
+                    clearInterval(timer);
+                  } else {
+                    counter.textContent = Math.round(currentVal) + '%';
+                  }
+                }, stepTime);
+              }
+            }
+            observer.unobserve(card);
+          }
+        });
+      }, { threshold: 0.2 });
+
+      skillCards.forEach(card => skillObserver.observe(card));
+    }
+
+    // Section reveal on scroll
+    function observeSections() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+          }
+        });
+      }, { threshold: 0.1 });
+
+      document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+    }
+
+    window.addEventListener('load', () => {
+      filterTab('all');
+      observeSections();
+      observeProgressBars();
+    });
+  </script>
+</body>
+</html>
